@@ -54,7 +54,7 @@ class PolidoroArgumentParser(ArgumentParser):
 
             value = getattr(namespace, name)
             if (
-                    not info.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                    info.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
                     and isinstance(value, list)
             ):
                 value = value[0]
@@ -125,32 +125,35 @@ class PolidoroArgumentParser(ArgumentParser):
             command_class = commands[0].clazz
             subparsers = get_subparsers(name, command_class)
             while commands:
-                command = commands.pop(0)
-                help_ = command.kwargs.pop('help')
-                config = command.kwargs.pop('config', {})
-                sub_parser = subparsers.add_parser(
-                    command.method_name, add_help=help_ != SUPPRESS, help=help_, **command.kwargs
-                )
-                sub_parser.set_defaults(func=command.method)
+                self._add_parser(commands, subparsers)
 
-                for name, info in PolidoroArgumentParser.get_method_parameters(command.method):
-                    argument_kwargs = config.get(name, {})
-                    if name.startswith("_"):
-                        continue
-                    if info.kind == inspect.Parameter.POSITIONAL_ONLY:
-                        sub_parser.add_argument(name, nargs=1, default=info.default, **argument_kwargs)
-                    elif info.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD:
-                        if info.default == inspect.Parameter.empty:
-                            sub_parser.add_argument(name, nargs=1, default=info.default, **argument_kwargs)
-                        else:
-                            sub_parser.add_argument(name, nargs="?", default=info.default, **argument_kwargs)
-                            sub_parser.add_argument(f"--{name}", nargs=1, default=info.default, **argument_kwargs)
-                    elif info.kind == inspect.Parameter.VAR_POSITIONAL:
-                        sub_parser.add_argument(name, nargs="*", default=[], **argument_kwargs)
-                    elif info.kind == inspect.Parameter.KEYWORD_ONLY:
-                        sub_parser.add_argument(f"--{name}", nargs=1, default=info.default, **argument_kwargs)
-                    elif info.kind == inspect.Parameter.VAR_KEYWORD:
-                        sub_parser.add_argument(f"--{name}", nargs="*", default={}, **argument_kwargs)
+    @staticmethod
+    def _add_parser(commands, subparsers):
+        command = commands.pop(0)
+        help_ = command.kwargs.pop('help')
+        config = command.kwargs.pop('config', {})
+        sub_parser = subparsers.add_parser(
+            command.method_name, add_help=help_ != SUPPRESS, help=help_, **command.kwargs
+        )
+        sub_parser.set_defaults(func=command.method)
+        for name, info in PolidoroArgumentParser.get_method_parameters(command.method):
+            argument_kwargs = config.get(name, {})
+            if name.startswith("_"):
+                continue
+            if info.kind == inspect.Parameter.POSITIONAL_ONLY:
+                sub_parser.add_argument(name, nargs=1, default=info.default, **argument_kwargs)
+            elif info.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD:
+                if info.default == inspect.Parameter.empty:
+                    sub_parser.add_argument(name, nargs=1, default=info.default, **argument_kwargs)
+                else:
+                    sub_parser.add_argument(name, nargs="?", default=info.default, **argument_kwargs)
+                    sub_parser.add_argument(f"--{name}", nargs=1, default=info.default, **argument_kwargs)
+            elif info.kind == inspect.Parameter.VAR_POSITIONAL:
+                sub_parser.add_argument(name, nargs="*", default=[], **argument_kwargs)
+            elif info.kind == inspect.Parameter.KEYWORD_ONLY:
+                sub_parser.add_argument(f"--{name}", nargs=1, default=info.default, **argument_kwargs)
+            elif info.kind == inspect.Parameter.VAR_KEYWORD:
+                sub_parser.add_argument(f"--{name}", nargs="*", default={}, **argument_kwargs)
 
     @staticmethod
     def get_method_parameters(method):

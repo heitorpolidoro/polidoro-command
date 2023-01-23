@@ -5,4 +5,4 @@ from polidoro_command.polidoro_help_action import PolidoroHelpAction
 from polidoro_command.polidoro_argument_parser import PolidoroArgumentParser
 
 NAME = 'polidoro_command'
-VERSION = "0.1.0"
+VERSION = "0.1.1"
