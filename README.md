@@ -1,7 +1,5 @@
 # Polidoro Command
-[![Tests](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/test.yml/badge.svg)](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/test.yml)
-[![Upload Python Package](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/python-publish.yml/badge.svg)](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/python-publish.yml)
-[![Lint with comments](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/python-lint.yml/badge.svg)](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/python-lint.yml)
+[![Tests](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/push.yml/badge.svg)](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/push.yml)
 ![GitHub last commit](https://img.shields.io/github/last-commit/heitorpolidoro/polidoro-command)
 [![Coverage Status](https://coveralls.io/repos/github/heitorpolidoro/polidoro-command/badge.svg?branch=master)](https://coveralls.io/github/heitorpolidoro/polidoro-command?branch=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=heitorpolidoro_polidoro-command&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=heitorpolidoro_polidoro-command)
