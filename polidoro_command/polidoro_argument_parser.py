@@ -54,7 +54,7 @@ class PolidoroArgumentParser(ArgumentParser):
 
             value = getattr(namespace, name)
             if (
-                    not info.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                    info.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
                     and isinstance(value, list)
             ):
                 value = value[0]
