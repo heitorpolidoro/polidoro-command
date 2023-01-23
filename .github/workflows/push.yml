@@ -68,7 +68,7 @@ jobs:
 
       - name: Send to Coverall
         env:
-          HEITORPOLIDORO_PAT: ${{ secrets.HEITORPOLIDORO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
         if: matrix.python-version == '3.9'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
@@ -106,7 +106,7 @@ jobs:
         with:
           version_file: polidoro_command/__init__.py
         env:
-          HEITORPOLIDORO_PAT: ${{ secrets.HEITORPOLIDORO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
 
   deploy:
