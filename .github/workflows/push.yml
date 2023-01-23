@@ -56,12 +56,6 @@ jobs:
           pip install -e .[test]
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Generate Tests
-        env:
-          PYTHONPATH: .
-        run: |
-          python tests/generate_test_files.py
-
       - name: Run tests
         if: matrix.python-version != '3.9'
         run: |
