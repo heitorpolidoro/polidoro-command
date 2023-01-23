@@ -20,7 +20,7 @@ jobs:
       - name: Run Flake 8
         uses: heitorpolidoro/flake8-with-PR-comments@v1
         env:
-          HEITORPOLIDORO_PAT: ${{ secrets.HEITORPOLIDORO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
   tests:
     name: Tests
