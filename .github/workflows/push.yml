@@ -67,6 +67,8 @@ jobs:
           pytest --cov --cov-report=xml
 
       - name: Send to Coverall
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: matrix.python-version == '3.9'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
@@ -104,7 +106,7 @@ jobs:
         with:
           version_file: polidoro_command/__init__.py
         env:
-          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   deploy:
