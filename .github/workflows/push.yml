@@ -20,14 +20,14 @@ jobs:
       - name: Run Flake 8
         uses: heitorpolidoro/flake8-with-PR-comments@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
   tests:
     name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.9]
 
     steps:
       - name: Checkout
@@ -67,6 +67,8 @@ jobs:
           pytest --cov --cov-report=xml
 
       - name: Send to Coverall
+        env:
+          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
         if: matrix.python-version == '3.9'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
