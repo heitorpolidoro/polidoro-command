@@ -1,4 +1,4 @@
-from collections import defaultdict
+import sys
 
 import pytest
 
@@ -7,7 +7,6 @@ from polidoro_command import PolidoroArgumentParser, command
 
 @pytest.fixture
 def parser():
-    PolidoroArgumentParser.commands = defaultdict(list)
     PolidoroArgumentParser._subparsers_dict = {}
     return PolidoroArgumentParser(prog="testCommand")
 
@@ -28,11 +27,16 @@ def command_with_arguments():
 
 @pytest.fixture
 def command_in_class():
-    class CMD:
-        @staticmethod
-        @command
-        def command_test():
-            return "command in class"
+    from polidoro_command.tests.class_with_help import CMD
+    yield
+    sys.modules.pop(CMD.__module__, None)
+
+
+@pytest.fixture
+def command_class():
+    from polidoro_command.tests.command_class import CommandClass
+    yield
+    sys.modules.pop(CommandClass.__module__, None)
 
 
 def assert_call(parser, commands, expected_output, capsys, exit_code=0, expected_exception=SystemExit):

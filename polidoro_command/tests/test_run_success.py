@@ -1,6 +1,6 @@
 from argparse import ArgumentError
 
-from tests.conftest import assert_call
+from polidoro_command.tests.conftest import assert_call
 
 
 def test_run_success_no_arguments(parser, command_no_arguments, capsys):
@@ -23,3 +23,7 @@ def test_run_in_class(parser, command_in_class, capsys):
     assert_call(parser, "command_test", "argument {cmd}: invalid choice: 'command_test' (choose from 'cmd')", capsys,
                 expected_exception=ArgumentError)
     assert_call(parser, "cmd command_test", "command in class\n", capsys, expected_exception=None)
+
+
+def test_run_command_class(parser, command_class, capsys):
+    assert_call(parser, "commandclass cmd1", "cmd1\n", capsys, expected_exception=None)

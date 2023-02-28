@@ -1,4 +1,4 @@
-from tests.conftest import assert_call
+from polidoro_command.tests.conftest import assert_call
 
 
 def test_run_failure_no_arguments(parser, command_no_arguments, capsys):
