@@ -44,7 +44,7 @@ usage: testCommand [-h] {cool_command}
 commands:
     cool_command
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
   
 $ python foo.py cool_command
@@ -64,7 +64,7 @@ usage: testCommand command_with_arg [-h] [--arg2 ARG2] arg1
 positional arguments:
   arg1
 
-optional arguments:
+options:
   -h, --help   show this help message and exit
   --arg2 ARG2
   
@@ -107,7 +107,7 @@ usage: testCommand command_with_arg [-h] [--arg2 ARG2] arg1
 positional arguments:
   arg1         Arg1 Help
 
-optional arguments:
+options:
   -h, --help   show this help message and exit
   --arg2 ARG2  Arg2 Help (default: None)
 ```

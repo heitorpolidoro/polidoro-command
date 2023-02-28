@@ -1,20 +1,23 @@
 import inspect
+from collections import defaultdict
+
+from polidoro_command.utils import decorator
 
 
 # noinspection PyPep8Naming
 class Command:
+    _methods = defaultdict(dict)
+
     def __init__(self, method, args, kwargs):
         self.method = method
         self.args = args
+        self.context = kwargs.pop("context", None)
+        self.name = kwargs.pop("name", self.method.__name__)
         self.kwargs = kwargs
+        if not isinstance(kwargs.get("aliases", []), list):
+            kwargs["aliases"] = [kwargs["aliases"]]
         self.kwargs.setdefault("help", "")
-
-    @property
-    def method_name(self):
-        return self.method.__name__
-
-    def __getattr__(self, item):
-        return self.kwargs.get(item)
+        self.configs = Command._methods.get(method, {})
 
     @property
     def clazz(self):
@@ -35,13 +38,40 @@ class Command:
         return getattr(method, '__objclass__', None)
 
 
-def command(*args, **kwargs):
-    from polidoro_command import PolidoroArgumentParser
-    if len(args) == 1 and callable(args[0]):
-        method = args[0]
-        PolidoroArgumentParser.add_command(Command(method, args[1:], kwargs))
+class _CommandDecorator:
+
+    @staticmethod
+    @decorator
+    def __call__(method, *args, **kwargs):
+        from polidoro_command import PolidoroArgumentParser
+        if isinstance(method, type):
+            clazz = method
+            for _, method_ in inspect.getmembers(
+                    clazz,
+                    predicate=lambda m: inspect.isfunction(m) and not m.__name__.startswith('_')
+            ):
+                PolidoroArgumentParser.add_command(Command(method_, args, kwargs.copy()))
+            return clazz
+        else:
+            PolidoroArgumentParser.add_command(Command(method, args, kwargs))
+            return method
+
+    def __getattr__(self, item):
+        if item.startswith("_"):
+            raise AttributeError("command", item)
+
+        def _config_wrapper(method, **config):
+            return _CommandDecorator._config(method, item, **config)
+
+        return decorator(_config_wrapper)
+
+    # noinspection PyProtectedMember
+    @staticmethod
+    def _config(method, config_name, **config):
+        for arg, conf in config.items():
+            Command._methods[method][arg] = {config_name: conf}
+
         return method
-    else:
-        def command_wrapper(method_):
-            return command(method_, *args, **kwargs)
-        return command_wrapper
+
+
+command = _CommandDecorator()

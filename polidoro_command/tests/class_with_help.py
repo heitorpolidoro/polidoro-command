@@ -2,7 +2,7 @@ from polidoro_command import command
 
 
 class CMD:
-    help = "Class Help"
+    _command_help = "Class Help"
 
     @staticmethod
     @command
