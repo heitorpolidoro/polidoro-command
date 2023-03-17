@@ -23,11 +23,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
   qodana:
-    name: Linter
+    name: Qodana
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - name: 'Qodana Scan'
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Qodana Scan
         uses: JetBrains/qodana-action@main
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
