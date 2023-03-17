@@ -3,4 +3,4 @@ linter: jetbrains/qodana-python:2022.3-eap
 exclude:
   - name: Tests
     paths:
-      - tests
+      - polidoro_command/tests
