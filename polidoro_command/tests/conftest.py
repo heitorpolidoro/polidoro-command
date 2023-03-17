@@ -41,6 +41,8 @@ def command_class():
 
 def assert_call(parser, commands, expected_output, capsys, exit_code=0, expected_exception=SystemExit):
     except_info = None
+    if sys.version.startswith("3.9."):
+        expected_output = expected_output.replace("options:", "optional arguments:")
 
     if expected_exception:
         with pytest.raises(expected_exception) as except_info:

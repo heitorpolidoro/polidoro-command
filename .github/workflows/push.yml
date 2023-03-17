@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", 3.11]
+        python-version: [3.9, "3.10", 3.11]
 
     steps:
       - name: Checkout
@@ -70,19 +70,19 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests
-        if: matrix.python-version != '3.9'
+        if: matrix.python-version != '3.11'
         run: |
           pytest
 
       - name: Run tests
-        if: matrix.python-version == '3.9'
+        if: matrix.python-version == '3.11'
         run: |
           pytest --cov --cov-report=xml
 
       - name: Send to Coverall
         env:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
-        if: matrix.python-version == '3.9'
+        if: matrix.python-version == '3.11'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
   set-auto-merge:
