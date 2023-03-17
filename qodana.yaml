@@ -4,3 +4,4 @@ exclude:
   - name: All
     paths:
       - polidoro_command/tests
+  - name: PyClassHasNoInitInspection
