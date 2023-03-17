@@ -102,7 +102,7 @@ class PolidoroArgumentParser(ArgumentParser):
 
     def _add_commands(self):
         # Add the commands as parser parameters
-        def get_subparsers(parser_name, clazz=None, **kwargs):
+        def get_subparsers(parser_name, clazz=None):
             if parser_name in PolidoroArgumentParser._subparsers_dict:
                 return PolidoroArgumentParser._subparsers_dict[parser_name]
 
