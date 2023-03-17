@@ -22,12 +22,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
+  qodana:
+    name: 'Qodana Scan'
+    uses: JetBrains/qodana-action@main
+    if: github.event_name == 'pull_request'
+    env:
+      QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
   tests:
     name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [3.7, 3.8, 3.9, "3.10", 3.11]
 
     steps:
       - name: Checkout
