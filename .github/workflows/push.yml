@@ -15,23 +15,36 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Flake 8
         uses: heitorpolidoro/flake8-with-PR-comments@v1
         env:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
+  qodana:
+    name: Qodana
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@main
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
   tests:
     name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [3.9, "3.10", 3.11]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -57,19 +70,19 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests
-        if: matrix.python-version != '3.9'
+        if: matrix.python-version != '3.11'
         run: |
           pytest
 
       - name: Run tests
-        if: matrix.python-version == '3.9'
+        if: matrix.python-version == '3.11'
         run: |
           pytest --cov --cov-report=xml
 
       - name: Send to Coverall
         env:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
-        if: matrix.python-version == '3.9'
+        if: matrix.python-version == '3.11'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
   set-auto-merge:
@@ -79,7 +92,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
 
@@ -97,7 +110,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Create GitHub Release
         id: release
@@ -117,7 +130,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v2

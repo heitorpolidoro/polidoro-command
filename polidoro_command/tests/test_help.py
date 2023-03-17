@@ -1,5 +1,5 @@
 from polidoro_command import command
-from tests.conftest import assert_call
+from polidoro_command.tests.conftest import assert_call
 
 
 def test_help_no_arguments(parser, command_no_arguments, capsys):
@@ -9,7 +9,7 @@ def test_help_no_arguments(parser, command_no_arguments, capsys):
 commands:
     command_test
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
 """,
                 capsys)
@@ -17,7 +17,7 @@ optional arguments:
     assert_call(parser, "command_test --help",
                 """usage: testCommand command_test [-h]
 
-optional arguments:
+options:
   -h, --help  show this help message and exit
 """,
                 capsys)
@@ -30,7 +30,7 @@ def test_help_with_arguments(parser, command_with_arguments, capsys):
 commands:
     command_test
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
 """,
                 capsys)
@@ -46,7 +46,7 @@ positional arguments:
   pwd
   args
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --pwd PWD
   --ko KO
@@ -58,9 +58,9 @@ def test_help_in_class(parser, command_in_class, capsys):
     assert_call(parser, "--help", """usage: testCommand [-h] {cmd}
 
 commands:
-    cmd
+    cmd         Class Help
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
 """, capsys)
     assert_call(parser, "cmd --help", """usage: testCommand cmd [-h] {command_test}
@@ -68,25 +68,19 @@ optional arguments:
 commands:
     command_test
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
 """, capsys)
     assert_call(parser, "cmd command_test --help", """usage: testCommand cmd command_test [-h]
 
-optional arguments:
+options:
   -h, --help  show this help message and exit
 """, capsys)
 
 
 def test_custom_help(parser, capsys):
-    @command(help="Custom help", config={
-        "po": {"help": "PO Help"},
-        "pwod": {"help": "PWOD Help"},
-        "pwd": {"help": "PWD Help"},
-        "args": {"help": "ARGS Help"},
-        "ko": {"help": "KO Help"},
-        "kwargs": {"help": "KWARGS Help"},
-    })
+    @command(help="Custom help")
+    @command.help(po="PO Help", pwod="PWOD Help", pwd="PWD Help", args="ARGS Help", ko="KO Help", kwargs="KWARGS Help")
     def command_test(po, /, pwod, pwd='default_pwd', *args, ko='default_ko', _ko_ignored=None, **kwargs):
         return "command called"
 
@@ -97,7 +91,7 @@ commands:
     command_test
                 Custom help
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
 """,
                 capsys)
@@ -113,7 +107,7 @@ positional arguments:
   pwd                   PWD Help (default: default_pwd)
   args                  ARGS Help (default: [])
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --pwd PWD             PWD Help (default: default_pwd)
   --ko KO               KO Help (default: default_ko)
@@ -121,22 +115,26 @@ optional arguments:
 """, capsys)
 
 
-def test_custom_help_in_class(parser, capsys):
-    # noinspection PyUnresolvedReferences
-    from tests.class_with_help import CMD
-    assert_call(parser, "--help", """usage: testCommand [-h] {cmd}
+def test_help_command_class(parser, command_class, capsys):
+    assert_call(parser, "--help", """usage: testCommand [-h] {commandclass}
 
 commands:
-    cmd         Class Help
+    commandclass
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
 """, capsys)
-    assert_call(parser, "cmd --help", """usage: testCommand cmd [-h] {command_test}
+    assert_call(parser, "commandclass --help", """usage: testCommand commandclass [-h] {cmd1,cmd2}
 
 commands:
-    command_test
+    cmd1
+    cmd2
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
+""", capsys)
+    assert_call(parser, "commandclass cmd1 --help", """usage: testCommand commandclass cmd1 [-h]
+
+options:
+  -h, --help  show this help message and exit
 """, capsys)
