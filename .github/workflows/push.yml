@@ -115,7 +115,7 @@ jobs:
       - name: Create GitHub Release
         id: release
         if: github.event_name == 'push' || github.event.pull_request.merged == true
-        uses: heitorpolidoro/auto-release@v1
+        uses: heitorpolidoro/auto-release@v2
         with:
           version_file: polidoro_command/__init__.py
         env:
