@@ -81,7 +81,7 @@ jobs:
 
       - name: Send to Coverall
         env:
-          GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: matrix.python-version == '3.11'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
