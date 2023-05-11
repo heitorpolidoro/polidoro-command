@@ -142,22 +142,32 @@ class PolidoroArgumentParser(ArgumentParser):
         sub_parser.set_defaults(func=command.method)
         for name, info in PolidoroArgumentParser.get_method_parameters(command.method):
             argument_kwargs = config.get(name, {})
+            if info.default != inspect.Parameter.empty:
+                argument_kwargs.setdefault("default", info.default)
+            if info.annotation != inspect.Parameter.empty:
+                argument_kwargs["type"] = info.annotation
             if name.startswith("_"):
                 continue
             if info.kind == inspect.Parameter.POSITIONAL_ONLY:
-                sub_parser.add_argument(name, nargs=1, default=info.default, **argument_kwargs)
+                sub_parser.add_argument(name, nargs=1, **argument_kwargs)
             elif info.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD:
                 if info.default == inspect.Parameter.empty:
-                    sub_parser.add_argument(name, nargs=1, default=info.default, **argument_kwargs)
+                    sub_parser.add_argument(name, nargs=1, **argument_kwargs)
                 else:
-                    sub_parser.add_argument(name, nargs="?", default=info.default, **argument_kwargs)
-                    sub_parser.add_argument(f"--{name}", nargs=1, default=info.default, **argument_kwargs)
+                    sub_parser.add_argument(name, nargs="?", **argument_kwargs)
+                    sub_parser.add_argument(f"--{name}", nargs=1, **argument_kwargs)
             elif info.kind == inspect.Parameter.VAR_POSITIONAL:
-                sub_parser.add_argument(name, nargs="*", default=[], **argument_kwargs)
+                argument_kwargs["default"] = argument_kwargs.get("default", [])
+                sub_parser.add_argument(name, nargs="*", **argument_kwargs)
             elif info.kind == inspect.Parameter.KEYWORD_ONLY:
-                sub_parser.add_argument(f"--{name}", nargs=1, default=info.default, **argument_kwargs)
+                if isinstance(info.default, bool):
+                    argument_kwargs.pop("type")
+                    sub_parser.add_argument(f"--{name}", action=f"store_{not info.default}".lower(), **argument_kwargs)
+                else:
+                    sub_parser.add_argument(f"--{name}", nargs=1, **argument_kwargs)
             elif info.kind == inspect.Parameter.VAR_KEYWORD:
-                sub_parser.add_argument(f"--{name}", nargs="*", default={}, **argument_kwargs)
+                argument_kwargs["default"] = argument_kwargs.get("default", {})
+                sub_parser.add_argument(f"--{name}", nargs="*", **argument_kwargs)
 
     @staticmethod
     def get_method_parameters(method):
