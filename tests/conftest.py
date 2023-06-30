@@ -43,7 +43,7 @@ def command_class():
 
 @pytest.fixture
 def single_command_class():
-    from tests.single_command_class import SingleCommandClass
+    from single_command_class import SingleCommandClass
     yield SingleCommandClass
     sys.modules.pop(SingleCommandClass.__module__, None)
 
