@@ -1,4 +1,4 @@
-from tests.conftest import assert_call
+from conftest import assert_call
 
 
 def test_same_command_name_warning(parser, capsys):
