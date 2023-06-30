@@ -1,4 +1,4 @@
-# Polidoro Command
+# PCommand
 [![Tests](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/push.yml/badge.svg)](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/push.yml)
 ![GitHub last commit](https://img.shields.io/github/last-commit/heitorpolidoro/polidoro-command)
 [![Coverage Status](https://coveralls.io/repos/github/heitorpolidoro/polidoro-command/badge.svg?branch=master)](https://coveralls.io/github/heitorpolidoro/polidoro-command?branch=master)
@@ -15,20 +15,20 @@ Package to simplify creating command line arguments for scripts in Python.
 
 #### How to use:
 
-- Decorate the method you want to call from command line with `@command`.
+- Decorate the method you want to call from command line with `@pcommand`.
 - Create a `PolidoroArgumentParser`
 - Call `parser.parse_args()`
 
-All keywords arguments to `@command` are the same as in [argparse.ArgumentParser.add_argument](https://docs.python.org/3.7/library/argparse.html#the-add-argument-method) except for 'action' and 'nargs' 
+All keywords arguments to `@pcommand` are the same as in [argparse.ArgumentParser.add_argument](https://docs.python.org/3.7/library/argparse.html#the-add-argument-method) except for 'action' and 'nargs' 
 which is calculated based on the method signature.
 
 To create commands
 
 ```python
-from polidoro_command import PolidoroArgumentParser, command
+from polidoro_command import PolidoroArgumentParser, pcommand
 
 
-@command
+@pcommand
 def cool_command():
     print('this is a command')
     
@@ -53,7 +53,7 @@ this is a command
 With arguments
 
 ```python
-@command
+@pcommand
 def command_with_arg(arg1, arg2=None):
     print(f"this the command arg1: {arg1}, arg2: {arg2}")
 ```
@@ -79,7 +79,7 @@ Using a Class
 ```python
 class ClassCommand:
     @staticmethod
-    @command
+    @pcommand
     def command_in_class(arg='Oi'):
         print(f"command_in_class called. arg={arg}")
 ```
@@ -93,7 +93,7 @@ command_in_class called. arg=Ola
 
 Adding help
 ```python
-@command(help="command help", config={
+@pcommand(help="command help", config={
     "arg1": {"help": "Arg1 Help"},
     "arg2": {"help": "Arg2 Help"},
 })

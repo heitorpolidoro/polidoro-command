@@ -1,6 +1,6 @@
 from argparse import ArgumentError
 
-from polidoro_command.tests.conftest import assert_call
+from pcommand.tests.conftest import assert_call
 
 
 def test_run_success_no_arguments(parser, command_no_arguments, capsys):
@@ -15,6 +15,9 @@ def test_run_success_with_arguments(parser, command_with_arguments, capsys):
                 capsys, expected_exception=None)
     assert_call(parser, "command_test PO PWOD PWD ARG1 ARG2 --ko=KO --kw1=KW1",
                 "command called with PO, PWOD, PWD, KO, ('ARG1', 'ARG2'), {'kw1': 'KW1'}\n",
+                capsys, expected_exception=None)
+    assert_call(parser, "command_test PO PWOD --pwd=PWD",
+                "command called with PO, PWOD, PWD, default_ko, (), {}\n",
                 capsys, expected_exception=None)
 
 

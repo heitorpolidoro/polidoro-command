@@ -1,7 +1,7 @@
 import inspect
 from collections import defaultdict
 
-from polidoro_command.utils import decorator
+from pcommand.utils import decorator
 
 
 # noinspection PyPep8Naming
@@ -43,17 +43,17 @@ class _CommandDecorator:
     @staticmethod
     @decorator
     def __call__(method, *args, **kwargs):
-        from polidoro_command import PolidoroArgumentParser
+        from pcommand import ArgumentParser
         if isinstance(method, type):
             clazz = method
             for _, method_ in inspect.getmembers(
                     clazz,
                     predicate=lambda m: inspect.isfunction(m) and not m.__name__.startswith('_')
             ):
-                PolidoroArgumentParser.add_command(Command(method_, args, kwargs.copy()))
+                ArgumentParser.add_command(Command(method_, args, kwargs.copy()))
             return clazz
         else:
-            PolidoroArgumentParser.add_command(Command(method, args, kwargs))
+            ArgumentParser.add_command(Command(method, args, kwargs))
             return method
 
     def __getattr__(self, item):

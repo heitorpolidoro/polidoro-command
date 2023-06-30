@@ -2,13 +2,13 @@ import sys
 
 import pytest
 
-from polidoro_command import PolidoroArgumentParser, command
+from pcommand import ArgumentParser, command
 
 
 @pytest.fixture
 def parser():
-    PolidoroArgumentParser._subparsers_dict = {}
-    return PolidoroArgumentParser(prog="testCommand")
+    ArgumentParser._subparsers_dict = {}
+    return ArgumentParser(prog="testCommand")
 
 
 @pytest.fixture
@@ -27,14 +27,14 @@ def command_with_arguments():
 
 @pytest.fixture
 def command_in_class():
-    from polidoro_command.tests.class_with_help import CMD
+    from pcommand.tests.class_with_help import CMD
     yield
     sys.modules.pop(CMD.__module__, None)
 
 
 @pytest.fixture
 def command_class():
-    from polidoro_command.tests.command_class import CommandClass
+    from pcommand.tests.command_class import CommandClass
     yield
     sys.modules.pop(CommandClass.__module__, None)
 
