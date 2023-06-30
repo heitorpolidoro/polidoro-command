@@ -30,15 +30,22 @@ def command_with_arguments():
 @pytest.fixture
 def command_in_class():
     from class_with_help import CMD
-    yield
+    yield CMD
     sys.modules.pop(CMD.__module__, None)
 
 
 @pytest.fixture
 def command_class():
     from command_class import CommandClass
-    yield
+    yield CommandClass
     sys.modules.pop(CommandClass.__module__, None)
+
+
+@pytest.fixture
+def single_command_class():
+    from tests.single_command_class import SingleCommandClass
+    yield SingleCommandClass
+    sys.modules.pop(SingleCommandClass.__module__, None)
 
 
 def assert_call(parser, commands, expected_output, capsys, exit_code=0, expected_exception=SystemExit):

@@ -19,14 +19,17 @@ class Command:
         self.kwargs.setdefault("help", "")
         self.configs = Command._methods.get(method, {})
 
+    def __eq__(self, other):
+        return self.name == other.name
+
     @property
     def clazz(self):
         method = self.method
-        if inspect.ismethod(method):
-            for cls in inspect.getmro(method.__self__.__class__):
-                if cls.__dict__.get(method.__name__) is method:
-                    return cls
-            method = method.__func__  # fallback to __qualname__ parsing
+        # if inspect.ismethod(method):
+        #     for cls in inspect.getmro(method.__self__.__class__):
+        #         if cls.__dict__.get(method.__name__) is method:
+        #             return cls
+        #     method = method.__func__  # fallback to __qualname__ parsing
         if inspect.isfunction(method):
             try:
                 cls = getattr(inspect.getmodule(method),

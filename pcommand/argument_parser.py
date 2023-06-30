@@ -98,8 +98,9 @@ class ArgumentParser(ArgumentParserBase):
 
         commands = ArgumentParser.commands
         if command in commands[context]:
+            command_name = (f"{context}." if context else "") + command.name
             print(
-                f'WARNING: "{context}" already defined. Ignoring...'
+                f'WARNING: "{command_name}" already defined. Ignoring...'
             )
         else:
             commands[context].append(command)
@@ -112,7 +113,12 @@ class ArgumentParser(ArgumentParserBase):
 
             if parser_name:
                 _subparsers = get_subparsers(".".join(f".{parser_name}".split(".")[:-1]))
-                class_config = {k.replace("_command_", ""): v for k, v in clazz.__dict__.items() if k.startswith("_command_")}
+                if clazz:
+                    class_config = {
+                        k.replace("_command_", ""): v for k, v in clazz.__dict__.items() if k.startswith("_command_")
+                    }
+                else:
+                    class_config = {}
                 class_help = class_config.pop("help", "")
                 _parser = _subparsers.add_parser(
                     parser_name.split(".")[-1].lower(), add_help=class_help != SUPPRESS, help=class_help, **class_config

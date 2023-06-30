@@ -15,20 +15,20 @@ Package to simplify creating command line arguments for scripts in Python.
 
 #### How to use:
 
-- Decorate the method you want to call from command line with `@pcommand`.
+- Decorate the method you want to call from command line with `@command`.
 - Create a `PolidoroArgumentParser`
 - Call `parser.parse_args()`
 
-All keywords arguments to `@pcommand` are the same as in [argparse.ArgumentParser.add_argument](https://docs.python.org/3.7/library/argparse.html#the-add-argument-method) except for 'action' and 'nargs' 
+All keywords arguments to `@command` are the same as in [argparse.ArgumentParser.add_argument](https://docs.python.org/3.7/library/argparse.html#the-add-argument-method) except for 'action' and 'nargs' 
 which is calculated based on the method signature.
 
 To create commands
 
 ```python
-from polidoro_command import PolidoroArgumentParser, pcommand
+from pcommand import PolidoroArgumentParser, command
 
 
-@pcommand
+@command
 def cool_command():
     print('this is a command')
     
@@ -53,7 +53,7 @@ this is a command
 With arguments
 
 ```python
-@pcommand
+@command
 def command_with_arg(arg1, arg2=None):
     print(f"this the command arg1: {arg1}, arg2: {arg2}")
 ```
@@ -79,7 +79,7 @@ Using a Class
 ```python
 class ClassCommand:
     @staticmethod
-    @pcommand
+    @command
     def command_in_class(arg='Oi'):
         print(f"command_in_class called. arg={arg}")
 ```
@@ -93,7 +93,7 @@ command_in_class called. arg=Ola
 
 Adding help
 ```python
-@pcommand(help="command help", config={
+@command(help="command help", config={
     "arg1": {"help": "Arg1 Help"},
     "arg2": {"help": "Arg2 Help"},
 })

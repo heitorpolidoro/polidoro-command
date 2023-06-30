@@ -138,3 +138,37 @@ options:
 options:
   -h, --help  show this help message and exit
 """, capsys)
+
+
+def test_run_single_command_class(parser, single_command_class, capsys):
+    assert_call(parser, "--help", """usage: testCommand [-h] {singlecommandclass}
+
+commands:
+    singlecommandclass
+
+options:
+  -h, --help          show this help message and exit
+""", capsys)
+
+def test_version(capsys):
+    from pcommand import ArgumentParser
+    parser = ArgumentParser(prog="testCommand", version="1.2.3")
+    assert_call(parser, "-v", "testCommand 1.2.3\n", capsys)
+    assert_call(parser, "--version", "testCommand 1.2.3\n", capsys)
+
+
+def test_type_from_annotation_help(parser, capsys):
+    @command
+    def command_test(noted_int: int, noted_str: str, noted_bool: bool):
+        return noted_int, noted_str, noted_bool
+
+    assert_call(parser, "command_test --help", """usage: testCommand command_test [-h] noted_int noted_str noted_bool
+
+positional arguments:
+  noted_int
+  noted_str
+  noted_bool
+
+options:
+  -h, --help  show this help message and exit
+""",  capsys)
