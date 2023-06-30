@@ -4,6 +4,8 @@ import pytest
 
 from pcommand import ArgumentParser, command
 
+pytest.register_assert_rewrite("tests.helper")
+
 
 @pytest.fixture
 def parser():
@@ -27,14 +29,14 @@ def command_with_arguments():
 
 @pytest.fixture
 def command_in_class():
-    from pcommand.tests.class_with_help import CMD
+    from class_with_help import CMD
     yield
     sys.modules.pop(CMD.__module__, None)
 
 
 @pytest.fixture
 def command_class():
-    from pcommand.tests.command_class import CommandClass
+    from command_class import CommandClass
     yield
     sys.modules.pop(CommandClass.__module__, None)
 

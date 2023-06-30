@@ -71,6 +71,7 @@ class ArgumentParser(ArgumentParserBase):
             elif info.kind == inspect.Parameter.VAR_POSITIONAL:
                 func_args.extend(value)
             elif info.kind == inspect.Parameter.VAR_KEYWORD:
+                value = value.copy()
                 var_keywords_regex = r"--(\w+)[ =]?(\w+)?"
                 for a in argv[:]:
                     var_keywords = re.search(var_keywords_regex, a)

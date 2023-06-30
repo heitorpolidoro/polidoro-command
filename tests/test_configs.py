@@ -1,5 +1,5 @@
 from pcommand import command
-from pcommand.tests.conftest import assert_call
+from conftest import assert_call
 
 
 def test_name(parser, capsys):

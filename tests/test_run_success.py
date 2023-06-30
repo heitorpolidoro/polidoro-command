@@ -1,6 +1,6 @@
 from argparse import ArgumentError
 
-from pcommand.tests.conftest import assert_call
+from conftest import assert_call
 
 
 def test_run_success_no_arguments(parser, command_no_arguments, capsys):
@@ -13,8 +13,8 @@ def test_run_success_with_arguments(parser, command_with_arguments, capsys):
     assert_call(parser, "command_test PO PWOD",
                 "command called with PO, PWOD, default_pwd, default_ko, (), {}\n",
                 capsys, expected_exception=None)
-    assert_call(parser, "command_test PO PWOD PWD ARG1 ARG2 --ko=KO --kw1=KW1",
-                "command called with PO, PWOD, PWD, KO, ('ARG1', 'ARG2'), {'kw1': 'KW1'}\n",
+    assert_call(parser, "command_test PO PWOD PWD ARG1 ARG2 --ko=KO --kw1=KW2",
+                "command called with PO, PWOD, PWD, KO, ('ARG1', 'ARG2'), {'kw1': 'KW2'}\n",
                 capsys, expected_exception=None)
     assert_call(parser, "command_test PO PWOD --pwd=PWD",
                 "command called with PO, PWOD, PWD, default_ko, (), {}\n",
