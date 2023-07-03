@@ -20,7 +20,7 @@ jobs:
       - name: Creating Pull Request
         uses: heitorpolidoro/autocreate-pr@v2
         with:
-          automerge: true
+          automerge: "true"
         env:
           heitorpolidoro: ${{ secrets.HEITORPOLIDORO_PAT }}
 
@@ -90,7 +90,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          linters: flake8 black isort
+          linters: flake8
 
 # Only master
   create-release:
