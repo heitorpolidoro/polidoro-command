@@ -100,7 +100,6 @@ jobs:
     needs:
       - tests
       - linters
-      - sonarcloud
 
     steps:
       - name: Checkout
