@@ -57,7 +57,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov coveralls
-#          pip install -e .[test]
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests
@@ -70,7 +69,6 @@ jobs:
         run: |
             coverage run -m pytest
             coverage xml
-#          pytest --cov --cov-report=xml
 
       - name: Send to Coverall
         env:
@@ -83,21 +81,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-#  sonarcloud:
-#    name: SonarCloud
-#    runs-on: ubuntu-latest
-#    if: github.event_name != 'workflow_dispatch'
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-#      - name: SonarCloud Scan
-#        uses: SonarSource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   linters:
     name: Linters
