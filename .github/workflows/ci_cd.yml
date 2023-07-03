@@ -28,6 +28,7 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'
     strategy:
       matrix:
         python-version: [3.9, "3.10", 3.11]
@@ -75,20 +76,26 @@ jobs:
         if: matrix.python-version == '3.11'
         run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
-  sonarcloud:
-    name: SonarCloud
-    runs-on: ubuntu-latest
-    if: github.event_name != 'workflow_dispatch'
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+#  sonarcloud:
+#    name: SonarCloud
+#    runs-on: ubuntu-latest
+#    if: github.event_name != 'workflow_dispatch'
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#      - name: SonarCloud Scan
+#        uses: SonarSource/sonarcloud-github-action@master
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   linters:
     name: Linters
