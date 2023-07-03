@@ -94,7 +94,7 @@ class ArgumentParser(ArgumentParserBase):
         elif command.clazz:
             context = command.clazz.__name__
         else:
-            context, _, _ = re.sub(r".*<locals>\.", "", command.method.__qualname__).rpartition(".")
+            context, _, _ = command.method.__qualname__.split("<locals>.")[-1].rpartition(".")
 
         commands = ArgumentParser.commands
         if command in commands[context]:

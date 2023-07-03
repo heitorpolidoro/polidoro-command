@@ -27,7 +27,7 @@ class HelpFormatter(ArgumentDefaultsHelpFormatter):
                 part = re.sub(var_keywords_regex, f"--{option_string} {metavar} ...", part)
 
             # Remove the "..." from the end of the line
-            part = re.sub(r" *\.\.\.\n", "", part)
+            part = re.sub(r" \.\.\.\n", "", part)
             return part
 
         part_strings = map(sanitize, part_strings)
