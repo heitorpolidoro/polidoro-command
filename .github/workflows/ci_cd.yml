@@ -60,21 +60,16 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests
-        if: matrix.python-version != '3.11'
         run: |
-          python -m pytest
-
-      - name: Run tests
-        if: matrix.python-version == '3.11'
-        run: |
-            coverage run -m pytest
-            coverage xml
+          coverage run -m pytest
 
       - name: Send to Coverall
         env:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
         if: matrix.python-version == '3.11'
-        run: COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
+        run: |
+          coverage xml
+          COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} coveralls
 
   linters:
     name: Linters
@@ -107,7 +102,7 @@ jobs:
 
       - name: Create GitHub Release
         id: release
-        uses: heitorpolidoro/auto-release@v2
+        uses: heitorpolidoro/auto-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.HEITORPOLIDORO_PAT }}
 
