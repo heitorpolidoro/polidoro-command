@@ -1,4 +1,4 @@
-from polidoro_command import command
+from pcommand import command
 
 
 class CMD:

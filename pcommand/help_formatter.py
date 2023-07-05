@@ -1,16 +1,16 @@
 import re
 from argparse import SUPPRESS, ArgumentDefaultsHelpFormatter
 
-from polidoro_command import PolidoroSubParsersAction
+from pcommand import SubParsersAction
 
 
 # noinspection PyProtectedMember
-class PolidoroHelpFormatter(ArgumentDefaultsHelpFormatter):
+class HelpFormatter(ArgumentDefaultsHelpFormatter):
     def _format_action_invocation(self, action):
         # Override to hide subparsers group help
-        if isinstance(action, PolidoroSubParsersAction):
+        if isinstance(action, SubParsersAction):
             return SUPPRESS
-        return super(PolidoroHelpFormatter, self)._format_action_invocation(action)
+        return super(HelpFormatter, self)._format_action_invocation(action)
 
     def _join_parts(self, part_strings):
         # Override to format the help
@@ -27,11 +27,11 @@ class PolidoroHelpFormatter(ArgumentDefaultsHelpFormatter):
                 part = re.sub(var_keywords_regex, f"--{option_string} {metavar} ...", part)
 
             # Remove the "..." from the end of the line
-            part = re.sub(r" *\.\.\.\n", "", part)
+            part = re.sub(r" \.\.\.\n", "", part)
             return part
 
         part_strings = map(sanitize, part_strings)
-        resp = super(PolidoroHelpFormatter, self)._join_parts(part_strings)
+        resp = super(HelpFormatter, self)._join_parts(part_strings)
         return resp
 
     def _metavar_formatter(self, action, default_metavar):

@@ -1,5 +1,5 @@
-from polidoro_command import command
-from polidoro_command.tests.conftest import assert_call
+from pcommand import command
+from conftest import assert_call
 
 
 def test_name(parser, capsys):

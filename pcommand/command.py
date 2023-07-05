@@ -1,7 +1,7 @@
 import inspect
 from collections import defaultdict
 
-from polidoro_command.utils import decorator
+from pcommand.utils import decorator
 
 
 # noinspection PyPep8Naming
@@ -19,14 +19,17 @@ class Command:
         self.kwargs.setdefault("help", "")
         self.configs = Command._methods.get(method, {})
 
+    def __eq__(self, other):
+        return self.name == other.name
+
     @property
     def clazz(self):
         method = self.method
-        if inspect.ismethod(method):
-            for cls in inspect.getmro(method.__self__.__class__):
-                if cls.__dict__.get(method.__name__) is method:
-                    return cls
-            method = method.__func__  # fallback to __qualname__ parsing
+        # if inspect.ismethod(method):
+        #     for cls in inspect.getmro(method.__self__.__class__):
+        #         if cls.__dict__.get(method.__name__) is method:
+        #             return cls
+        #     method = method.__func__  # fallback to __qualname__ parsing
         if inspect.isfunction(method):
             try:
                 cls = getattr(inspect.getmodule(method),
@@ -43,17 +46,17 @@ class _CommandDecorator:
     @staticmethod
     @decorator
     def __call__(method, *args, **kwargs):
-        from polidoro_command import PolidoroArgumentParser
+        from pcommand import ArgumentParser
         if isinstance(method, type):
             clazz = method
             for _, method_ in inspect.getmembers(
                     clazz,
                     predicate=lambda m: inspect.isfunction(m) and not m.__name__.startswith('_')
             ):
-                PolidoroArgumentParser.add_command(Command(method_, args, kwargs.copy()))
+                ArgumentParser.add_command(Command(method_, args, kwargs.copy()))
             return clazz
         else:
-            PolidoroArgumentParser.add_command(Command(method, args, kwargs))
+            ArgumentParser.add_command(Command(method, args, kwargs))
             return method
 
     def __getattr__(self, item):

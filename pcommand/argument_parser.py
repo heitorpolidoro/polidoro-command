@@ -1,22 +1,23 @@
 import inspect
 import re
-from argparse import ArgumentParser, SUPPRESS
+from argparse import ArgumentParser as ArgumentParserBase, SUPPRESS
 from collections import defaultdict
+from collections.abc import Iterator
 from gettext import gettext
 
-from polidoro_command import PolidoroHelpAction
-from polidoro_command import PolidoroHelpFormatter, PolidoroSubParsersAction
+from pcommand import HelpAction
+from pcommand import HelpFormatter, SubParsersAction
 
 
-class PolidoroArgumentParser(ArgumentParser):
+class ArgumentParser(ArgumentParserBase):
     commands = defaultdict(list)
     _subparsers_dict = {}
 
-    def __init__(self, *args, version=None, help_action=PolidoroHelpAction, **kwargs):
+    def __init__(self, *args, version=None, help_action=HelpAction, **kwargs):
         # Override to add version action if a version value is present
         self.help_action = help_action
-        super(PolidoroArgumentParser, self).__init__(
-            *args, formatter_class=PolidoroHelpFormatter, exit_on_error=False, **kwargs
+        super(ArgumentParser, self).__init__(
+            *args, formatter_class=HelpFormatter, exit_on_error=False, **kwargs
         )
 
         self.subparsers = None
@@ -30,8 +31,8 @@ class PolidoroArgumentParser(ArgumentParser):
         self._add_commands()
         namespace, argv = self.parse_known_args(args, namespace)
         # Print the usage when there is no function to be called
-        func = getattr(namespace, 'func', lambda: PolidoroHelpAction("-h")(self, None, None, "-h"))
-        func_args, func_kwargs, argv = PolidoroArgumentParser.parse_function_args(func, namespace, argv)
+        func = getattr(namespace, 'func', lambda: HelpAction("-h")(self, None, None, "-h"))
+        func_args, func_kwargs, argv = ArgumentParser.parse_function_args(func, namespace, argv)
 
         if argv:
             msg = gettext('unrecognized arguments: %s')
@@ -40,6 +41,8 @@ class PolidoroArgumentParser(ArgumentParser):
         # noinspection PyArgumentList
         resp = func(*func_args, **func_kwargs)
         if resp is not None:
+            if isinstance(resp, Iterator):
+                resp = list(resp)
             print(resp)
         return namespace
 
@@ -49,7 +52,7 @@ class PolidoroArgumentParser(ArgumentParser):
         func_args = []
         func_kwargs = {}
 
-        for name, info in PolidoroArgumentParser.get_method_parameters(func):
+        for name, info in ArgumentParser.get_method_parameters(func):
             if name.startswith("_"):
                 continue
 
@@ -68,6 +71,7 @@ class PolidoroArgumentParser(ArgumentParser):
             elif info.kind == inspect.Parameter.VAR_POSITIONAL:
                 func_args.extend(value)
             elif info.kind == inspect.Parameter.VAR_KEYWORD:
+                value = value.copy()
                 var_keywords_regex = r"--(\w+)[ =]?(\w+)?"
                 for a in argv[:]:
                     var_keywords = re.search(var_keywords_regex, a)
@@ -90,12 +94,13 @@ class PolidoroArgumentParser(ArgumentParser):
         elif command.clazz:
             context = command.clazz.__name__
         else:
-            context, _, _ = re.sub(r".*<locals>\.", "", command.method.__qualname__).rpartition(".")
+            context, _, _ = command.method.__qualname__.split("<locals>.")[-1].rpartition(".")
 
-        commands = PolidoroArgumentParser.commands
+        commands = ArgumentParser.commands
         if command in commands[context]:
+            command_name = (f"{context}." if context else "") + command.name
             print(
-                f'WARNING: "{context}" already defined. Ignoring...'
+                f'WARNING: "{command_name}" already defined. Ignoring...'
             )
         else:
             commands[context].append(command)
@@ -103,12 +108,17 @@ class PolidoroArgumentParser(ArgumentParser):
     def _add_commands(self):
         # Add the commands as parser parameters
         def get_subparsers(parser_name, clazz=None):
-            if parser_name in PolidoroArgumentParser._subparsers_dict:
-                return PolidoroArgumentParser._subparsers_dict[parser_name]
+            if parser_name in ArgumentParser._subparsers_dict:
+                return ArgumentParser._subparsers_dict[parser_name]
 
             if parser_name:
                 _subparsers = get_subparsers(".".join(f".{parser_name}".split(".")[:-1]))
-                class_config = {k.replace("_command_", ""): v for k, v in clazz.__dict__.items() if k.startswith("_command_")}
+                if clazz:
+                    class_config = {
+                        k.replace("_command_", ""): v for k, v in clazz.__dict__.items() if k.startswith("_command_")
+                    }
+                else:
+                    class_config = {}
                 class_help = class_config.pop("help", "")
                 _parser = _subparsers.add_parser(
                     parser_name.split(".")[-1].lower(), add_help=class_help != SUPPRESS, help=class_help, **class_config
@@ -116,7 +126,7 @@ class PolidoroArgumentParser(ArgumentParser):
             else:
                 _parser = self
 
-            PolidoroArgumentParser._subparsers_dict[parser_name] = _parser.add_subparsers(
+            ArgumentParser._subparsers_dict[parser_name] = _parser.add_subparsers(
                 title="commands"
             )
             # noinspection PyProtectedMember
@@ -140,7 +150,7 @@ class PolidoroArgumentParser(ArgumentParser):
             command.name, add_help=help_ != SUPPRESS, help=help_, **command.kwargs
         )
         sub_parser.set_defaults(func=command.method)
-        for name, info in PolidoroArgumentParser.get_method_parameters(command.method):
+        for name, info in ArgumentParser.get_method_parameters(command.method):
             argument_kwargs = config.get(name, {})
             if info.default != inspect.Parameter.empty:
                 argument_kwargs.setdefault("default", info.default)
@@ -161,7 +171,7 @@ class PolidoroArgumentParser(ArgumentParser):
                 sub_parser.add_argument(name, nargs="*", **argument_kwargs)
             elif info.kind == inspect.Parameter.KEYWORD_ONLY:
                 if isinstance(info.default, bool):
-                    argument_kwargs.pop("type")
+                    argument_kwargs.pop("type", None)
                     sub_parser.add_argument(f"--{name}", action=f"store_{not info.default}".lower(), **argument_kwargs)
                 else:
                     sub_parser.add_argument(f"--{name}", nargs=1, **argument_kwargs)
@@ -179,5 +189,5 @@ class PolidoroArgumentParser(ArgumentParser):
             if value == "help":
                 return self.help_action
             if value == "parsers":
-                return PolidoroSubParsersAction
+                return SubParsersAction
         return self._registries[registry_name].get(value, default)

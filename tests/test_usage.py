@@ -1,4 +1,4 @@
-from polidoro_command.tests.conftest import assert_call
+from conftest import assert_call
 
 
 def test_usage_no_arguments(parser, command_no_arguments, capsys):

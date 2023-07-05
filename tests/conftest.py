@@ -2,13 +2,15 @@ import sys
 
 import pytest
 
-from polidoro_command import PolidoroArgumentParser, command
+from pcommand import ArgumentParser, command
+
+pytest.register_assert_rewrite("tests.helper")
 
 
 @pytest.fixture
 def parser():
-    PolidoroArgumentParser._subparsers_dict = {}
-    return PolidoroArgumentParser(prog="testCommand")
+    ArgumentParser._subparsers_dict = {}
+    return ArgumentParser(prog="testCommand")
 
 
 @pytest.fixture
@@ -27,16 +29,23 @@ def command_with_arguments():
 
 @pytest.fixture
 def command_in_class():
-    from polidoro_command.tests.class_with_help import CMD
-    yield
+    from class_with_help import CMD
+    yield CMD
     sys.modules.pop(CMD.__module__, None)
 
 
 @pytest.fixture
 def command_class():
-    from polidoro_command.tests.command_class import CommandClass
-    yield
+    from command_class import CommandClass
+    yield CommandClass
     sys.modules.pop(CommandClass.__module__, None)
+
+
+@pytest.fixture
+def single_command_class():
+    from single_command_class import SingleCommandClass
+    yield SingleCommandClass
+    sys.modules.pop(SingleCommandClass.__module__, None)
 
 
 def assert_call(parser, commands, expected_output, capsys, exit_code=0, expected_exception=SystemExit):

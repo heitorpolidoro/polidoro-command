@@ -1,4 +1,4 @@
-# Polidoro Command
+# PCommand
 [![Tests](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/push.yml/badge.svg)](https://github.com/heitorpolidoro/polidoro-command/actions/workflows/push.yml)
 ![GitHub last commit](https://img.shields.io/github/last-commit/heitorpolidoro/polidoro-command)
 [![Coverage Status](https://coveralls.io/repos/github/heitorpolidoro/polidoro-command/badge.svg?branch=master)](https://coveralls.io/github/heitorpolidoro/polidoro-command?branch=master)
@@ -25,7 +25,7 @@ which is calculated based on the method signature.
 To create commands
 
 ```python
-from polidoro_command import PolidoroArgumentParser, command
+from pcommand import PolidoroArgumentParser, command
 
 
 @command
