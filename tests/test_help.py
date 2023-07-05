@@ -150,6 +150,7 @@ options:
   -h, --help          show this help message and exit
 """, capsys)
 
+
 def test_version(capsys):
     from pcommand import ArgumentParser
     parser = ArgumentParser(prog="testCommand", version="1.2.3")
@@ -171,4 +172,4 @@ positional arguments:
 
 options:
   -h, --help  show this help message and exit
-""",  capsys)
+""", capsys)

@@ -23,5 +23,3 @@ class CommandClass:
     @staticmethod
     def _ignored_static():
         pass
-
-
