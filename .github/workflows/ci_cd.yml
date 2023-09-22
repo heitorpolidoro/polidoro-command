@@ -31,7 +31,7 @@ jobs:
     if: github.event_name != 'workflow_dispatch'
     strategy:
       matrix:
-        python-version: [3.9, "3.10", 3.11]
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9, "3.10", 3.11]
 
     steps:
       - name: Checkout
@@ -43,6 +43,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
+        id: cache-pip
         uses: actions/cache@v3
         with:
           # This path is specific to Ubuntu
@@ -51,9 +52,9 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-            ${{ runner.os }}-
 
       - name: Install dependencies
+        if: steps.cache-pip.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov coveralls
