@@ -5,6 +5,6 @@ from pcommand.help_action import HelpAction
 from pcommand.argument_parser import ArgumentParser
 
 __name__ = "pcommand"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __description__ = 'Decorator to easily create CLI with Python'
 __author__ = "Heitor Luis Polidoro"

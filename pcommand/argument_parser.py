@@ -7,7 +7,7 @@ from gettext import gettext
 
 from pcommand import HelpAction
 from pcommand import HelpFormatter, SubParsersAction
-
+from devtools import pprint
 
 class ArgumentParser(ArgumentParserBase):
     commands = defaultdict(list)
@@ -43,7 +43,7 @@ class ArgumentParser(ArgumentParserBase):
         if resp is not None:
             if isinstance(resp, Iterator):
                 resp = list(resp)
-            print(resp)
+            pprint(resp)
         return namespace
 
     @staticmethod
