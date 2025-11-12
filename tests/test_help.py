@@ -10,7 +10,7 @@ commands:
     command_test
 
 options:
-  -h, --help    show this help message and exit
+  -h, --help      show this help message and exit
 """,
                 capsys)
 
@@ -31,24 +31,20 @@ commands:
     command_test
 
 options:
-  -h, --help    show this help message and exit
+  -h, --help      show this help message and exit
 """,
                 capsys)
 
     assert_call(parser, "command_test --help",
-                """usage: testCommand command_test [-h] [--pwd PWD] [--ko KO]
-                                [--kwargs KWARGS ...]
-                                po pwod [pwd] [args ...]
+                """usage: testCommand command_test [-h] [--ko KO] [--kwargs KWARGS ...]
+                                po [args ...]
 
 positional arguments:
   po
-  pwod
-  pwd
   args
 
 options:
   -h, --help            show this help message and exit
-  --pwd PWD
   --ko KO
   --kwargs KWARGS
 """, capsys)
@@ -69,7 +65,7 @@ commands:
     command_test
 
 options:
-  -h, --help    show this help message and exit
+  -h, --help      show this help message and exit
 """, capsys)
     assert_call(parser, "cmd command_test --help", """usage: testCommand cmd command_test [-h]
 
@@ -88,11 +84,10 @@ def test_custom_help(parser, capsys):
                 """usage: testCommand [-h] {command_test}
 
 commands:
-    command_test
-                Custom help
+    command_test  Custom help
 
 options:
-  -h, --help    show this help message and exit
+  -h, --help      show this help message and exit
 """,
                 capsys)
 
@@ -122,7 +117,7 @@ commands:
     commandclass
 
 options:
-  -h, --help    show this help message and exit
+  -h, --help      show this help message and exit
 """, capsys)
     assert_call(parser, "commandclass --help", """usage: testCommand commandclass [-h] {cmd1,cmd2}
 
@@ -147,7 +142,7 @@ commands:
     singlecommandclass
 
 options:
-  -h, --help          show this help message and exit
+  -h, --help            show this help message and exit
 """, capsys)
 
 

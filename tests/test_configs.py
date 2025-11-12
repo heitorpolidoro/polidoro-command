@@ -14,8 +14,8 @@ commands:
     custom_name
 
 options:
-  -h, --help    show this help message and exit
+  -h, --help     show this help message and exit
 """,
                 capsys)
 
-    assert_call(parser, "custom_name", "custom name\n", capsys, expected_exception=None)
+    assert_call(parser, "custom_name", "'custom name'\n", capsys, expected_exception=None)

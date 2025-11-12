@@ -23,8 +23,8 @@ def command_no_arguments():
 @pytest.fixture
 def command_with_arguments():
     @command
-    def command_test(po, /, pwod, pwd='default_pwd', *args, ko='default_ko', _ko_ignored=None, **kwargs):
-        return f"command called with {po}, {pwod}, {pwd}, {ko}, {args}, {kwargs}"
+    def command_test(po, *args, ko='default_ko', _ko_ignored=None, **kwargs):
+        return f"command called with {po}, {ko}, {args}, {kwargs}"
 
 
 @pytest.fixture

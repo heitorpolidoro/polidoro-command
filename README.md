@@ -100,15 +100,13 @@ $ python foo.py classcommand command_in_class --arg Ola
 command_in_class called. arg=Ola
 ```
 
-Adding help text and per-argument config
+Adding help text for the command and its arguments
 
 ```python
 from pcommand import ArgumentParser, command
 
-@command(help="command help", config={
-    "arg1": {"help": "Arg1 Help"},
-    "arg2": {"help": "Arg2 Help"},
-})
+@command(help="command help")
+@command.help(arg1="Arg1 Help", arg2="Arg2 Help")
 def command_with_arg(arg1, *, arg2=None):  # keyword-only via *
     print(f"this is the command arg1: {arg1}, arg2: {arg2}")
 

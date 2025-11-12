@@ -56,7 +56,7 @@ class _CommandDecorator:
                 ArgumentParser.add_command(Command(method_, args, kwargs.copy()))
             return clazz
         else:
-            ArgumentParser.add_command(Command(method, args, kwargs))
+            ArgumentParser.add_command(Command(method, args, kwargs.copy()))
             return method
 
     def __getattr__(self, item):
